@@ -124,7 +124,7 @@ on the specific child type of container specified here.
     
     A - Action:  "Append Tag"
     B - Tags:    "Unprocessed"
-    C - Subject: "<SESSION_CONTAINER_ID_1>, <SESSION2_CONAINER_ID_2>, ...  <SESSION2_CONAINER_ID_X>"    
+    C - Session: "<SESSION_CONTAINER_ID_1>, <SESSION2_CONAINER_ID_2>, ...  <SESSION2_CONAINER_ID_X>"    
     
     But that could take a LONG time... 
     Instead we can use the "Process Child Sessions" option in section D.  To acieve this,
