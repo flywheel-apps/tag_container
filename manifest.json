@@ -1,0 +1,104 @@
+{
+  "name": "modify-tags",
+  "label": "FLYWHEEL: Modify Tags",
+  "description": "a gear to modify tags",
+  "maintainer": "Michael Perry <lmperry@stanford.edu>",
+  "author": "Loki, the trickster god",
+  "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET",
+  "source": "https://github.com/scitran-apps/fsl-bet",
+  "license": "Apache-2.0",
+  "version": "0.0.3_d",
+  "custom": {
+    "flywheel": {
+      "suite": "Flywheel"
+    },
+    "docker-image": "flywheel/modify_tags:0.0.0",
+    "gear-builder": {
+      "category": "converter",
+      "image": "flywheel/modify_tags:0.0.0"
+    }
+  },
+  "config": {
+    "C-Project Path": {
+      "description": "The project path to modify tags on (<GROUP>/<PROJECT> format)",
+      "optional": true,
+      "type": "string"
+    },
+    "C-Subject": {
+      "description": "The subject (ID or Label) that you want to modify tags on",
+      "optional": true,
+      "type": "string"
+    },
+    "C-Session": {
+      "description": "The session (ID or Label) that you want to modify tags on",
+      "optional": true,
+      "type": "string"
+    },
+    "C-Acquisition": {
+      "description": "The acquisition (ID or Label) that you want to modify tags on",
+      "optional": true,
+      "type": "string"
+    },
+    "D-Process Child Subjects": {
+      "description": "Perform tag action on all child Subject containers. If false, only operates on the specified container",
+      "type": "boolean",
+      "default": false
+      
+    },
+    "D-Process Child Sessions": {
+      "description": "Perform tag action on all child Session containers. If false, only operates on the specified container",
+      "type": "boolean",
+      "default": false
+    },
+    "D-Process Child Acquisitions": {
+      "description": "Perform tag action on all child Acquisition containers. If false, only operates on the specified container",
+      "type": "boolean",
+      "default": false
+    },
+    "D-Process Child Analyses": {
+      "description": "Perform tag action on all child Analysis containers. If false, only operates on the specified container",
+      "type": "boolean",
+      "default": false
+    },
+    "E-Query": {
+      "description": "An advanced search string (query) to filter all your results with.  The tags will only be modified on a container if it is returned by this query AND matches the specifications above.",
+      "type": "string",
+      "optional": true
+    },
+    "A-Action": {
+      "description": "Set the type of action you would like to take.  Options are: \n 'Append Tag: Add the specified tag if not already present.\n'Remove Tag': remove the specified tag if present.\n'Remove and append': Remove all existing tags and add the specified tag.\n'Remove all': removes all existing tags",
+      "type": "string",
+      "enum": [
+        "Append Tag",
+        "Remove Tag",
+        "Remove and Append",
+        "Remove All"
+      ],
+      "default": "Append Tag"
+    },
+    "B-Tags": {
+      "description": "The specified tag(s) add or remove, comma separated",
+      "type": "string",
+      "optional": true
+    }
+  },
+  "inputs": {  
+    "file": {
+      "base": "file",
+      "description": "A dicom file to change the tag of the parent acquisition.  Ignores all config settings in config except 'action' and 'tags' if present",
+      "optional": true,
+      "type": {
+        "enum": [
+          "dicom"
+        ]
+      }
+    },
+      
+    "api_key": {
+          "base": "api-key",
+          "read-only": true
+      }
+  },
+  "command": "python /flywheel/v0/run.py"
+}
+
