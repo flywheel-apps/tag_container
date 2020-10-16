@@ -78,7 +78,7 @@ a list of IDs can be passed in, separated with spaces or commas.
     
     A - Action:  "Append Tag"
     B - Tags:    "Unprocessed"
-    C - Subject: "<SUBJECT_CONTAINER_ID>"
+    C - Session: "<SESSION_CONTAINER_ID_1>,<SESSION_CONTAINER_ID_2>"
    
 
 ADDITIONALLY, the options
