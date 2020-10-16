@@ -31,7 +31,26 @@ As use case 1 is currently broken, we will focus on 2:
 A single container or group of containers is selected using a series of config settings.
 The configuration settings are broken into 5 sections:
 
-***A***:
+***A***: Section A specifies the type of tag modification you would like to make.
+
+
+***B***: Section B specifies the Tags you would like to add or remove.  
+
+
+***C***: Section C specifies containers to operate on.  To modify multiple containers at once,
+a list of IDs can be passed in, separated with spaces or commas.  
+
+
+***D***: Section D modifies the containers specified in section C.  By selecting options here,
+the gear will no longer operate on the container(s) specified in C, but will instead operate
+on the specific child type of container specified here. 
+
+
+***E***: Section E Allows the user to provide a query to filter their results by.  Only containers 
+that would return `True` for the query conditions are modified.  This allows the user to 
+easily re-tag every subject in a project that matches a certain condition.
+
+#### Section A
 
 Section A specifies the type of tag modification you would like to make.
    * **Action**: The action to perform on the tags.  Can be one of four actions:
@@ -43,14 +62,13 @@ Section A specifies the type of tag modification you would like to make.
         1. *Remove All*: Removes ALL tag(s) from the selected container(s).
 
 
-***B***:  
+#### Section B
 
 Section B specifies the Tags you would like to add or remove.  
    * **Tags**: A single tag or list of tags (comma or space separated) to perform the 
    specified action with.  Tags cannot be specified if the action is `Remove All`
    
-***C***:
-
+#### Section C
 Section C specifies containers to operate on.  To modify multiple containers at once,
 a list of IDs can be passed in, separated with spaces or commas.  
     
@@ -90,7 +108,7 @@ would like to modify tags on all child subjects of the containers provided here 
    or space.   
    
 
-***D***:
+#### Section D
 
 Section D modifies the containers specified in section C.  By selecting options here,
 the gear will no longer operate on the container(s) specified in C, but will instead operate
@@ -151,7 +169,7 @@ Hierarchy.
    at the subject level will be modifed, even if the subject has sessions that also have
    analyses
 
-***E***:
+#### Section E
 
 Section E Allows the user to provide a query to filter their results by.  Only containers 
 that would return `True` for the query conditions are modified.  This allows the user to 
