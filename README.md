@@ -10,13 +10,19 @@ The gear has two primary use cases:
 1. **Single File Input**: (Incomplete) modifies the tag of the file's parent acquisition.
 Currently, in Flywheel files cannot be tagged, so parent acquisition will have to do.
 
-    * The intended use case for this mode is as a gear rule to automatically tag acquisitions
+![FileRun](/src/FileRun.png)
+
+   * The intended use case for this mode is as a gear rule to automatically tag acquisitions
     of incoming files.  API permissions are currently preventing this gear from being used 
     as a rule.  Future implementations will attempt to modify tags using the metadata.json file
     to overcome this.  
     
+
+    
 2. **Bulk Container Input**: (Complete) Uses a series of configuration settings to select 
 a subset of containers for tag modification.
+
+![ConfigRun](/src/ConfigRun.png)
 
 As use case 1 is currently broken, we will focus on 2:
 
