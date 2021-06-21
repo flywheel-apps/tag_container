@@ -140,7 +140,7 @@ on the specific child type of container specified here.
     A - Action:  "Append Tag"
     B - Tags:    "Unprocessed"
     C - Project: "my_group/my_project"
-    D - Projcess Child Subjects: True    
+    D - Projcess Child Sessions: True    
 
 NOTE1: when you use these options, the gear NO LONGER attempts to modify the tags on the container(s)
 specified in section C.  ANY and ALL containers in section C are only used to find children

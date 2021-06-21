@@ -7,7 +7,7 @@
   "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET",
   "source": "https://github.com/scitran-apps/fsl-bet",
   "license": "Apache-2.0",
-  "version": "0.0.3_d",
+  "version": "0.0.3_f",
   "custom": {
     "flywheel": {
       "suite": "Flywheel"
@@ -56,6 +56,11 @@
       "default": false
     },
     "D-Process Child Analyses": {
+      "description": "Perform tag action on all child Analysis containers. If false, only operates on the specified container",
+      "type": "boolean",
+      "default": false
+    },
+    "D-Process Child Files": {
       "description": "Perform tag action on all child Analysis containers. If false, only operates on the specified container",
       "type": "boolean",
       "default": false

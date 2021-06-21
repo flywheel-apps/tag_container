@@ -155,7 +155,7 @@ def get_container(fw, container_id, container_level):
 
 def get_subcontainers(fw, container, container_level, sc_level, query=None):
     
-    if query is not None:
+    if query is not None and query is not "":
         query = f"{container_level}._id = {container.id} AND {query}"
         log.debug(f'Querrying: {query}')
         sq = {'structured_query': query, 'return_type': sc_level}
@@ -165,22 +165,23 @@ def get_subcontainers(fw, container, container_level, sc_level, query=None):
 
     else:
         if sc_level == 'subject':
-            sub_containers = container.subjects()
+            sub_containers = container.subjects(limit=10000)
         elif sc_level == 'session':
-            sub_containers = container.sessions()
+            sub_containers = container.sessions(limit=10000)
         elif sc_level == 'acquisition':
             if container_level == 'project':
-                sub_containers = fw.acquisitions.find(f"project={container.id}")
+                sub_containers = fw.acquisitions.find(f"project={container.id}",limit=10000)
             elif container_level == 'subject':
-                sub_containers = fw.acquisitions.find(f"subject={container.id}")
+                sub_containers = fw.acquisitions.find(f"subject={container.id}",limit=10000)
             else:
-                sub_containers = container.acquisitions()
+                sub_containers = container.acquisitions(limit=10000)
         elif sc_level == 'analysis':
             sub_containers = container.analyses
             
         else:
             sub_containers = None
     
+    log.debug(f'Number of containers: {len(sub_containers)}')
     return(sub_containers)
 
 
