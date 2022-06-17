@@ -13,23 +13,29 @@ log = logging.getLogger(__name__)
 
 def main(fw, gear_context):
 
-    container_level = pr.get_container_level(gear_context.config)
+    container_level = pr.get_container_level(gear_context)
     process_subcontainers = pr.get_subcontainers_to_process(gear_context.config)
     container_ids = pr.get_container_ids_from_config(gear_context.config)
     tag_list = pr.get_tag_list(gear_context.config)
     action = gear_context.config.get('A-Action')
     query = gear_context.config.get('E-Query')
+    child_file_filter = gear_context.config.get('E-Child File Filter')
+
     
     if not pr.validate_container_inputs(container_level, process_subcontainers, container_ids, action, tag_list):
         log.info('Initial validation failed.  Invalid Configuration.  See log to fix inputs.')
         sys.exit(1)
     
-   
+
+
     container_ids = container_ids[container_level]
-    
+
+    if not container_ids:
+        container_ids = [gear_context.destination["id"]]
+
     for container in container_ids:
         ct.process_containers(fw, container_level, process_subcontainers, container,
-                       action, tag_list, query)
+                       action, tag_list, query, child_file_filter)
     
     exit_status = 0
     return(exit_status)

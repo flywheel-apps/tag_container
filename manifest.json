@@ -7,15 +7,15 @@
   "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET",
   "source": "https://github.com/scitran-apps/fsl-bet",
   "license": "Apache-2.0",
-  "version": "0.0.3_f",
+  "version": "0.0.3_k",
   "custom": {
     "flywheel": {
       "suite": "Flywheel"
     },
-    "docker-image": "flywheel/modify_tags:0.0.0",
+    "docker-image": "flywheel/modify_tags:0.0.1",
     "gear-builder": {
       "category": "converter",
-      "image": "flywheel/modify_tags:0.0.0"
+      "image": "flywheel/modify_tags:0.0.1"
     }
   },
   "config": {
@@ -39,6 +39,12 @@
       "optional": true,
       "type": "string"
     },
+    "C-File": {
+      "description": "The file name that you want to modify tags on",
+      "optional": true,
+      "type": "string"
+  },
+
     "D-Process Child Subjects": {
       "description": "Perform tag action on all child Subject containers. If false, only operates on the specified container",
       "type": "boolean",
@@ -61,11 +67,17 @@
       "default": false
     },
     "D-Process Child Files": {
-      "description": "Perform tag action on all child Analysis containers. If false, only operates on the specified container",
+      "description": "Perform tag action on all child files. If false, only operates on the specified container",
       "type": "boolean",
       "default": false
     },
-    "E-Query": {
+
+    "E-Child File Filter": {
+      "description": "a regex to filter child files - only apply tags to child files that match this filter",
+      "type": "string",
+      "default": ""
+    },
+    "F-Query": {
       "description": "An advanced search string (query) to filter all your results with.  The tags will only be modified on a container if it is returned by this query AND matches the specifications above.",
       "type": "string",
       "optional": true

@@ -49,6 +49,8 @@ def remove_all_tags(container):
     return(container)
 
 def add_tag(container, tag, exist_ok=True):
+    if container.container_type == 'file':
+        container.label = container.name
     log.info(f'Adding tag {tag} to container {container.label}')
     # If the tag is already there but it's ok, return the container
     if container.get('tags') is None:
@@ -71,6 +73,8 @@ def remove_tag(container, tag):
 
 
 def modify_container_tag(container, tag, action='Append'):
+
+    log.debug(f'attempting to add tag {tag} to container {container.get("name")}{container.get("label")}')
     
     if action == 'Append Tag' or action == 'Remove and Append':
         tag = process_tag(tag)
@@ -146,6 +150,13 @@ def get_container(fw, container_id, container_level):
                       f"but is container type {container_type}")
             raise (e)
 
+    elif container_level == 'file':
+        # This becomes complicated now.
+        try:
+            pass
+        except:
+            pass
+
     else:
         log.error(f"Unknown container type {container_level}")
         raise Exception(f"Unknown container type {container_level}")
@@ -153,7 +164,7 @@ def get_container(fw, container_id, container_level):
     return(container)
 
 
-def get_subcontainers(fw, container, container_level, sc_level, query=None):
+def get_subcontainers(fw, container, container_level, sc_level, query=None, child_file_filter=None):
     
     if query is not None and query is not "":
         query = f"{container_level}._id = {container.id} AND {query}"
@@ -170,16 +181,23 @@ def get_subcontainers(fw, container, container_level, sc_level, query=None):
             sub_containers = container.sessions(limit=10000)
         elif sc_level == 'acquisition':
             if container_level == 'project':
-                sub_containers = fw.acquisitions.find(f"project={container.id}",limit=10000)
+                sub_containers = fw.acquisitions.find(f"project={container.id}", limit=10000)
             elif container_level == 'subject':
-                sub_containers = fw.acquisitions.find(f"subject={container.id}",limit=10000)
+                sub_containers = fw.acquisitions.find(f"subject={container.id}", limit=10000)
             else:
                 sub_containers = container.acquisitions(limit=10000)
         elif sc_level == 'analysis':
             sub_containers = container.analyses
-            
+
+        elif sc_level == 'file':
+            sub_containers = container.files
+
+            if child_file_filter:
+                sub_containers = [sc for sc in sub_containers if re.match(child_file_filter, sc.name)]
+
+
         else:
-            sub_containers = None
+            sub_containers = []
     
     log.debug(f'Number of containers: {len(sub_containers)}')
     return(sub_containers)
@@ -187,7 +205,7 @@ def get_subcontainers(fw, container, container_level, sc_level, query=None):
 
 
 def process_containers(fw, container_level, process_subcontainers, container_id,
-                       original_action, tags, query=None):
+                       original_action, tags, query=None, child_file_filter=""):
     
     log.debug(f"container_level: {container_level}")
     log.debug(f"process_subcontainers: {process_subcontainers}")
@@ -196,32 +214,53 @@ def process_containers(fw, container_level, process_subcontainers, container_id,
     log.debug(f"tags: {tags}")
     log.debug(f"container_level: {container_level}")
     log.debug(f"query: {query}")
+    log.debug(f"child file filter: {child_file_filter}")
 
-
-    
     container = get_container(fw, container_id, container_level)
+
+    if 'file' in process_subcontainers:
+        file_level_present = True
+    else:
+        file_level_present = False
 
     if process_subcontainers == ['self']:
         if original_action == 'Remove All':
             modify_container_tag(container, None, original_action)
         else:
+            action = original_action
             for tag in tags:
-                modify_container_tag(container, tag, original_action)
+                modify_container_tag(container, tag, action)
                 if original_action == 'Remove and Append':
                     action = 'Append'
 
     else:
         log.debug(f'proces_subcontainers: {process_subcontainers}')
+
+
         for sc_level in process_subcontainers:
             
             if sc_level != 'self':
             
-                sub_containers = get_subcontainers(fw, container, container_level, sc_level, query)
+                sub_containers = get_subcontainers(fw, container, container_level, sc_level, query, child_file_filter)
             
                 if sub_containers is None:
                     continue
-            
+
+                if sc_level != 'file' and file_level_present:
+                    log.debug(f'Getting files on level {sc_level} for processing')
+                    sub_containers_files = []
+                    for sub_container in sub_containers:
+                        sub_container_level = sub_container.container_type
+                        sub_container_files = get_subcontainers(fw, sub_container, sub_container_level, 'file', query, child_file_filter)
+                        sub_containers_files.extend(sub_container_files)
+                    log.debug(f'found {len(sub_containers_files)} files for processing')
+                    sub_containers = sub_containers_files
+
+                log.debug('MADE IT HERE')
+                log.debug(sub_containers)
                 for sub_container in sub_containers:
+                    log.debug(f'looping through subcontainer, processing {sub_container.get("name")}{sub_container.get("label")}')
+
                     sub_container = sub_container.reload()
                     action = original_action
                     if action == 'Remove All':
