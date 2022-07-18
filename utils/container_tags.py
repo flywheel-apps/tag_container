@@ -152,10 +152,12 @@ def get_container(fw, container_id, container_level):
 
     elif container_level == 'file':
         # This becomes complicated now.
+        # I don't think I'm implementing any "Set this specific file's tag".
+        # I think the purpose is to process CHILD files of subjects/sessions, etc.
         try:
-            pass
+            container = None
         except:
-            pass
+            container = None
 
     else:
         log.error(f"Unknown container type {container_level}")

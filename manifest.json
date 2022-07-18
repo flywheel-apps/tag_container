@@ -7,7 +7,7 @@
   "url": "http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/BET",
   "source": "https://github.com/scitran-apps/fsl-bet",
   "license": "Apache-2.0",
-  "version": "0.0.3_k",
+  "version": "0.0.3_l",
   "custom": {
     "flywheel": {
       "suite": "Flywheel"

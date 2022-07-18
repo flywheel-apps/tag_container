@@ -29,7 +29,7 @@ def get_container_ids_from_config(config):
 
         container_dict[container] = container_ids
     log.debug(container_dict)
-    return (container_dict)
+    return(container_dict)
 
 
 def get_container_level(context):
@@ -42,7 +42,7 @@ def get_container_level(context):
         level = 'subject'
     elif config.get('C-Project Path'):
         level = 'project'
-    elif config.get('c-File'):
+    elif config.get('C-File'):
         level = 'file'
     else:
         log.info('No Level Detected')
@@ -51,7 +51,7 @@ def get_container_level(context):
         level = dest.container_type
         log.info(f'Setting level to destination level:{level}')
         print(config)
-    return (level)
+    return(level)
 
 
 def get_subcontainers_to_process(config):
