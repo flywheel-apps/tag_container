@@ -16,7 +16,8 @@ def get_container_ids_from_config(config):
     name2container = {'project': 'C-Project Path',
                       'subject': 'C-Subject',
                       'session': 'C-Session',
-                      'acquisition': 'C-Acquisition'}
+                      'acquisition': 'C-Acquisition',
+                      'file': 'C-File'}
     
     container_dict = {}
    
@@ -28,10 +29,11 @@ def get_container_ids_from_config(config):
 
         container_dict[container] = container_ids
     log.debug(container_dict)
-    return (container_dict)
+    return(container_dict)
 
 
-def get_container_level(config):
+def get_container_level(context):
+    config = context.config
     if config.get('C-Acquisition'):
         level = 'acquisition'
     elif config.get('C-Session'):
@@ -40,11 +42,16 @@ def get_container_level(config):
         level = 'subject'
     elif config.get('C-Project Path'):
         level = 'project'
+    elif config.get('C-File'):
+        level = 'file'
     else:
         log.info('No Level Detected')
-        level = 'None'
+        dest_id = context.destination["id"]
+        dest = context.client.get(dest_id)
+        level = dest.container_type
+        log.info(f'Setting level to destination level:{level}')
         print(config)
-    return (level)
+    return(level)
 
 
 def get_subcontainers_to_process(config):
@@ -57,6 +64,8 @@ def get_subcontainers_to_process(config):
         containers_to_process.append('acquisition')
     if config.get('D-Process Child Analyses'):
         containers_to_process.append('analysis')
+    if config.get('D-Process Child Files'):
+        containers_to_process.append('file')
 
     return (containers_to_process)
 
@@ -67,6 +76,14 @@ def validate_container_inputs(container_level, process_subcontainers, container_
     # First see if the container level we're at has been specified as a sub-container
     # For example, the user specifies a session ID, and then checks "Process Child Sessions"
     # also check if sub-containers ABOVE the container level are checked:
+    if container_level == 'file':
+        parents = ['acquisition', 'session', 'subject', 'acquisition', 'analyses']
+        if any([parent in process_subcontainers for parent in parents]):
+            log.error('Cannot process sub-containers acquisition/session/subject/acquisition/analyses'
+                      ' for container file')
+            valid = False
+
+
     if container_level == 'acquisition':
         parents = ['session', 'subject', 'acquisition', 'analyses']
         if any([parent in process_subcontainers for parent in parents]):
@@ -89,7 +106,7 @@ def validate_container_inputs(container_level, process_subcontainers, container_
     # Check if multiple container IDs are filled out
     if len([True for val in container_ids.values() if val is not None]) > 1:
         log.error('Multiple container levels are provided- Only one level '
-                  '(Project, Subject, Session, or Acquisition), may have IDs.')
+                  '(Project, Subject, Session, Acquisition, File), may have IDs.')
         log.debug(container_ids)
         valid = False
         
